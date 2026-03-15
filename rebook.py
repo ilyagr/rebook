@@ -169,7 +169,7 @@ def start_loop(loop):
     asyncio.set_event_loop(loop)
     loop.run_forever()
 
-thread_loop = asyncio.get_event_loop()
+thread_loop = asyncio.new_event_loop()
 run_loop_thread = Thread(
     target=start_loop,
     args=(thread_loop,),
