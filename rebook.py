@@ -1,10 +1,9 @@
-#!/usr/bin/python
+#!/usr/bin/env python3
 
 from threading import Thread
 from tkinter import *
 from tkinter.ttk import *
 import asyncio
-import glob
 import json
 import os
 import re
