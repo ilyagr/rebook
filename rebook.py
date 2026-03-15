@@ -229,6 +229,10 @@ device_argument_map = {
     18: 'kao',
     19: 'nex7',
     20: None,
+    21: None,
+    22: None,
+    23: None,
+    24: None,
 }
 
 device_choice_map = {
@@ -252,7 +256,21 @@ device_choice_map = {
     17: 'Kobo H2O Full Screen',
     18: 'Kobo Aura One',
     19: 'Nexus 7',
-    20: 'Other (specify width & height)',
+    20: 'reMarkable 1/2',
+    21: 'reMarkable Paper Pro',
+    22: 'reMarkable Paper Pro (Move)',
+    23: 'reMarkable Paper Pro (Move) full screen',
+    24: 'Other (specify width & height)',
+}
+
+# Devices without a k2pdfopt -dev preset: pre-fill width, height, unit
+# index, and optionally DPI when selected.
+# Format: (width, height, unit_index, dpi_or_None) — unit 0 = inches.
+device_custom_dimensions = {
+    20: ('5.6', '7.5', 0, '226'),   # reMarkable 1/2: 1404x1872 @ 226dpi
+    21: ('7.1', '9.4', 0, '229'),   # reMarkable Paper Pro: 1620x2160 @ 229dpi
+    22: ('3.1', '5.5', 0, '264'),   # reMarkable Paper Pro Move: recommended (avoids UI)
+    23: ('3.6', '6.4', 0, '264'),   # reMarkable Paper Pro Move: 954x1696 @ 264ppi full screen
 }
 
 mode_argument_map = {
@@ -464,14 +482,25 @@ deviceText.grid(
 )
 
 def update_device_unit_width_height():
-    if deviceComboBox.current() != 20:  # non-other type
-        deviceType = device_argument_map[deviceComboBox.current()]
-        arg = device_arg_name + ' ' + deviceType
+    current = deviceComboBox.current()
+    device_arg_value = device_argument_map[current]
+
+    if device_arg_value is not None:  # built-in k2pdfopt device preset
+        arg = device_arg_name + ' ' + device_arg_value
         add_or_update_one_cmd_arg(device_arg_name, arg)
 
         remove_one_cmd_arg(width_arg_name)
         remove_one_cmd_arg(height_arg_name)
     else:
+        # Pre-fill dimensions for known custom devices
+        if current in device_custom_dimensions:
+            w, h, unit_idx, dpi = device_custom_dimensions[current]
+            strvarScreenWidth.set(w)
+            strvarScreenHeight.set(h)
+            unitComboBox.current(unit_idx)
+            if dpi is not None:
+                strvarDPI.set(dpi)
+
         screen_unit = unit_argument_map[unitComboBox.current()]
 
         width_arg = (
