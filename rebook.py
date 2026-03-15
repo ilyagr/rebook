@@ -558,10 +558,11 @@ widthSpinBox = Spinbox(
     from_=0,
     to=10000,
     increment=0.1,
-    state='readonly',
     textvariable=strvarScreenWidth,
     command=on_command_width_height_cb,
 )
+widthSpinBox.bind('<Return>', lambda e: on_command_width_height_cb())
+widthSpinBox.bind('<FocusOut>', lambda e: on_command_width_height_cb())
 widthSpinBox.grid(
     column=1,
     row=required_frame_row_num,
@@ -586,10 +587,11 @@ heightSpinBox = Spinbox(
     from_=0,
     to=10000,
     increment=0.1,
-    state='readonly',
     textvariable=strvarScreenHeight,
     command=on_command_width_height_cb,
 )
+heightSpinBox.bind('<Return>', lambda e: on_command_width_height_cb())
+heightSpinBox.bind('<FocusOut>', lambda e: on_command_width_height_cb())
 heightSpinBox.grid(
     column=1,
     row=required_frame_row_num,
@@ -750,10 +752,11 @@ colNumSpinBox = Spinbox(
     from_=1,
     to=10,
     increment=1,
-    state='readonly',
     textvariable=strvarColumnNum,
     command=on_command_column_num_cb,
 )
+colNumSpinBox.bind('<Return>', lambda e: on_command_column_num_cb())
+colNumSpinBox.bind('<FocusOut>', lambda e: on_command_column_num_cb())
 colNumSpinBox.grid(
     column=1,
     row=para_frame_row_num,
@@ -793,10 +796,11 @@ resolutionSpinBox = Spinbox(
     from_=0.1,
     to=10.0,
     increment=0.1,
-    state='readonly',
     textvariable=strvarResolutionMultiplier,
     command=on_command_resolution_multipler_cb,
 )
+resolutionSpinBox.bind('<Return>', lambda e: on_command_resolution_multipler_cb())
+resolutionSpinBox.bind('<FocusOut>', lambda e: on_command_resolution_multipler_cb())
 resolutionSpinBox.grid(
     column=1,
     row=para_frame_row_num,
@@ -891,10 +895,11 @@ leftMarginSpinBox = Spinbox(
     from_=0,
     to=100,
     increment=0.01,
-    state='readonly',
     textvariable=strvarLeftMargin,
     command=on_command_and_validate_crop_margin_cb,
 )
+leftMarginSpinBox.bind('<Return>', lambda e: on_command_and_validate_crop_margin_cb())
+leftMarginSpinBox.bind('<FocusOut>', lambda e: on_command_and_validate_crop_margin_cb())
 leftMarginSpinBox.grid(
     column=1,
     row=para_frame_row_num,
@@ -922,10 +927,11 @@ rightMarginSpinBox = Spinbox(
     from_=0,
     to=100,
     increment=0.01,
-    state='readonly',
     textvariable=strvarRightMargin,
     command=on_command_and_validate_crop_margin_cb,
 )
+rightMarginSpinBox.bind('<Return>', lambda e: on_command_and_validate_crop_margin_cb())
+rightMarginSpinBox.bind('<FocusOut>', lambda e: on_command_and_validate_crop_margin_cb())
 rightMarginSpinBox.grid(
     column=1,
     row=para_frame_row_num,
@@ -950,10 +956,11 @@ topMarginSpinBox = Spinbox(
     from_=0,
     to=100,
     increment=0.01,
-    state='readonly',
     textvariable=strvarTopMargin,
     command=on_command_and_validate_crop_margin_cb,
 )
+topMarginSpinBox.bind('<Return>', lambda e: on_command_and_validate_crop_margin_cb())
+topMarginSpinBox.bind('<FocusOut>', lambda e: on_command_and_validate_crop_margin_cb())
 topMarginSpinBox.grid(
     column=1,
     row=para_frame_row_num,
@@ -978,10 +985,11 @@ bottomMarginSpinBox = Spinbox(
     from_=0,
     to=100,
     increment=0.01,
-    state='readonly',
     textvariable=strvarBottomMargin,
     command=on_command_and_validate_crop_margin_cb,
 )
+bottomMarginSpinBox.bind('<Return>', lambda e: on_command_and_validate_crop_margin_cb())
+bottomMarginSpinBox.bind('<FocusOut>', lambda e: on_command_and_validate_crop_margin_cb())
 bottomMarginSpinBox.grid(
     column=1,
     row=para_frame_row_num,
@@ -1018,10 +1026,11 @@ dpiSpinBox = Spinbox(
     from_=0,
     to=1000,
     increment=1,
-    state='readonly',
     textvariable=strvarDPI,
     command=on_command_dpi_cb,
 )
+dpiSpinBox.bind('<Return>', lambda e: on_command_dpi_cb())
+dpiSpinBox.bind('<FocusOut>', lambda e: on_command_dpi_cb())
 dpiSpinBox.grid(
     column=1,
     row=para_frame_row_num,
@@ -1132,10 +1141,11 @@ fontSizeSpinBox = Spinbox(
     from_=0,
     to=100,
     increment=1,
-    state='readonly',
     textvariable=strvarFixedFontSize,
     command=on_command_fixed_font_size_cb,
 )
+fontSizeSpinBox.bind('<Return>', lambda e: on_command_fixed_font_size_cb())
+fontSizeSpinBox.bind('<FocusOut>', lambda e: on_command_fixed_font_size_cb())
 fontSizeSpinBox.grid(
     column=1,
     row=para_frame_row_num,
@@ -1187,10 +1197,11 @@ ocrCpuSpinBox = Spinbox(
     from_=0,
     to=100,
     increment=1,
-    state='readonly',
     textvariable=strvarOcrCpuPercentage,
     command=on_command_ocr_and_cpu_cb,
 )
+ocrCpuSpinBox.bind('<Return>', lambda e: on_command_ocr_and_cpu_cb())
+ocrCpuSpinBox.bind('<FocusOut>', lambda e: on_command_ocr_and_cpu_cb())
 ocrCpuSpinBox.grid(
     column=1,
     row=para_frame_row_num,
@@ -1284,10 +1295,11 @@ lineBreakSpinBox = Spinbox(
     from_=0.01,
     to=2.00,
     increment=0.01,
-    state='readonly',
     textvariable=strvarLinebreakSpace,
     command=on_command_line_break_cb,
 )
+lineBreakSpinBox.bind('<Return>', lambda e: on_command_line_break_cb())
+lineBreakSpinBox.bind('<FocusOut>', lambda e: on_command_line_break_cb())
 lineBreakSpinBox.grid(
     column=1,
     row=para_frame_row_num,
