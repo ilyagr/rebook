@@ -661,7 +661,11 @@ def on_command_save_cb():
 saveTextLabel = Label(infoFrame, text='Save Current Setting as Preset:')
 saveTextLabel.grid(column=0, row=0, sticky=N+W, pady=0, padx=5)
 
-saveButton = Button(infoFrame, text='Save', command=on_command_save_cb)
+saveButton = Button(
+    infoFrame,
+    text='Save to ./rebook_preset.json',
+    command=on_command_save_cb,
+)
 saveButton.grid(column=1, row=0, sticky=N+W, pady=0, padx=5)
 
 outputTextLabel = Label(infoFrame, text='Output Pdf File Path:')
@@ -1009,7 +1013,7 @@ def on_command_dpi_cb():
 
 dpiCheckButton = Checkbutton(
     paraFrame,
-    text='DPI:',
+    text='DPI (non-native mode only):',
     variable=isDPI,
     command=on_command_dpi_cb,
 )
