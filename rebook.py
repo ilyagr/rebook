@@ -7,6 +7,7 @@ import asyncio
 import json
 import os
 import re
+import shutil
 import subprocess as sub
 import tkinter.filedialog
 import tkinter.messagebox
@@ -69,15 +70,41 @@ menu_file.add_command(label='About', command=on_command_about_box_cb)
 
 # global variables and functions
 
-k2pdfopt_path = './k2pdfopt'
+_script_dir = os.path.dirname(os.path.abspath(__file__))
+
+def find_k2pdfopt():
+    """Find k2pdfopt binary: check K2PDFOPT_PATH env var, then next to this
+    script, then in the current working directory, then search PATH."""
+    env_path = os.environ.get('K2PDFOPT_PATH')
+    if env_path and os.path.isfile(env_path):
+        return env_path
+
+    beside_script = os.path.join(_script_dir, 'k2pdfopt')
+    if os.path.isfile(beside_script):
+        return beside_script
+
+    if os.path.isfile('./k2pdfopt'):
+        return './k2pdfopt'
+
+    found = shutil.which('k2pdfopt')
+    if found:
+        return found
+
+    return None
+
+k2pdfopt_path = find_k2pdfopt()
 custom_preset_file_path = 'rebook_preset.json'
 
 def check_k2pdfopt_path_exists():
-    if not os.path.exists(k2pdfopt_path):
+    if k2pdfopt_path is None or (
+            not os.path.isfile(k2pdfopt_path)
+            and not shutil.which(k2pdfopt_path)):
         tkinter.messagebox.showerror(
-            message='Failed to find k2pdfopt, ' +
-            'please put it under the same directory ' +
-            'as rebook and then restart.'
+            message='Failed to find k2pdfopt. Either:\n'
+            '- Put it in your PATH, or\n'
+            '- Put it next to rebook.py'
+            ' (' + _script_dir + '), or\n'
+            '- Set the K2PDFOPT_PATH environment variable.'
         )
         quit()
 
