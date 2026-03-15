@@ -7,6 +7,7 @@ import asyncio
 import json
 import os
 import re
+import shlex
 import shutil
 import subprocess as sub
 import tkinter.filedialog
@@ -329,18 +330,16 @@ def generate_cmd_arg_str():
 def convert_pdf_file(output_arg):
     check_k2pdfopt_path_exists()
 
-    async def async_run_cmd_and_log(exec_cmd):
+    async def async_run_cmd_and_log(cmd_args):
         global background_process
-
-        executed = exec_cmd.strip()
 
         def log_bytes(log_btyes):
             log_string(log_btyes.decode('utf-8'))
 
-        log_string(executed)
+        log_string(' '.join(shlex.quote(a) for a in cmd_args))
 
-        p = await asyncio.create_subprocess_shell(
-            executed,
+        p = await asyncio.create_subprocess_exec(
+            *cmd_args,
             stdout=asyncio.subprocess.PIPE,
             stderr=asyncio.subprocess.PIPE,
         )
@@ -357,18 +356,14 @@ def convert_pdf_file(output_arg):
                 break
 
     input_pdf_path = strvarFilePath.get().strip()
-    if ' ' in input_pdf_path:
-        # in case the file name contains space
-        input_pdf_path = '\"' + input_pdf_path + '\"'
 
-    executed = ' '.join([
+    cmd_args = [
         k2pdfopt_path,
         input_pdf_path,
-        output_arg,
-        generate_cmd_arg_str(),
-    ])
+    ] + shlex.split(output_arg) + shlex.split(generate_cmd_arg_str())
+
     future = asyncio.run_coroutine_threadsafe(
-        async_run_cmd_and_log(executed),
+        async_run_cmd_and_log(cmd_args),
         thread_loop,
     )
     return future
