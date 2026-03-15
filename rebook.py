@@ -7,6 +7,7 @@ import asyncio
 import glob
 import json
 import os
+import re
 import subprocess as sub
 import tkinter.filedialog
 import tkinter.messagebox
