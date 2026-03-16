@@ -716,6 +716,14 @@ cmdArgEntry = Entry(
 cmdArgEntry.bind('<Button-1>', on_bind_event_cmd_args_cb)
 cmdArgEntry.grid(column=1, row=2, sticky=N+W, pady=0, padx=5)
 
+def on_command_copy_cmd_args_cb():
+    root.clipboard_clear()
+    root.clipboard_append(strvarCmdArgs.get())
+
+copyButton = Button(infoFrame, text='\u2398', width=2,
+                    command=on_command_copy_cmd_args_cb)
+copyButton.grid(column=2, row=2, sticky=N+W, pady=0, padx=0)
+
 # parameters
 conversion_tab_left_part_row_num += 1
 
