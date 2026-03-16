@@ -839,6 +839,11 @@ def on_command_and_validate_crop_margin_cb():
     else:
         remove_one_cmd_arg(crop_margin_arg_name)
 
+    try:
+        _update_crop_margin_widget_states()
+    except NameError:
+        pass  # widgets not created yet during initial setup
+
 marginCheckButton = Checkbutton(
     paraFrame,
     text='Crop Margins (in):',
@@ -855,7 +860,7 @@ marginCheckButton.grid(
 
 para_frame_row_num += 1
 
-cropPageRangeTextLabel = Label(paraFrame, text='Page Range:')
+cropPageRangeTextLabel = Label(paraFrame, text='Crop Page Range:')
 cropPageRangeTextLabel.grid(
     column=0,
     row=para_frame_row_num,
@@ -996,6 +1001,21 @@ bottomMarginSpinBox.grid(
     pady=0,
     padx=5,
 )
+
+_crop_margin_widgets = [
+    cropPageRangeTextLabel, cropPageRangeEntry,
+    leftMarginTextLabel, leftMarginSpinBox,
+    rightMarginTextLabel, rightMarginSpinBox,
+    topMarginTextLabel, topMarginSpinBox,
+    bottomMarginTextLabel, bottomMarginSpinBox,
+]
+
+def _update_crop_margin_widget_states():
+    state = 'normal' if isCropMargin.get() else 'disabled'
+    for w in _crop_margin_widgets:
+        w.configure(state=state)
+
+_update_crop_margin_widget_states()
 
 para_frame_row_num += 1
 
