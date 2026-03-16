@@ -10,6 +10,8 @@ import re
 import shlex
 import shutil
 import subprocess as sub
+import urllib.parse
+import webbrowser
 import tkinter.filedialog
 import tkinter.messagebox
 import tkinter.scrolledtext as scrltxt
@@ -701,6 +703,17 @@ outputPathEntry = Entry(
     textvariable=strvarOutputFilePath,
 )
 outputPathEntry.grid(column=1, row=1, sticky=N+W, pady=0, padx=5)
+
+def on_command_open_output_cb():
+    path = strvarOutputFilePath.get().strip()
+    if path and os.path.exists(path):
+        webbrowser.open('file://' + urllib.parse.quote(os.path.abspath(path)))
+    else:
+        tkinter.messagebox.showerror(message='Output file not found: ' + path)
+
+openOutputButton = Button(infoFrame, text='\u2197', width=2,
+                          command=on_command_open_output_cb)
+openOutputButton.grid(column=2, row=1, sticky=N+W, pady=0, padx=0)
 
 cmdArgTextLabel = Label(infoFrame, text='Command-line Options:')
 cmdArgTextLabel.grid(column=0, row=2, sticky=N+W, pady=0, padx=5)
