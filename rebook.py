@@ -1769,7 +1769,9 @@ current_preview_page_index = 1
 
 # global variable to hold opened preview image to prevent gc collecting it
 preview_img = None
+preview_img_raw = None  # unzoomed PhotoImage
 canvas_image_tag = None
+preview_zoom_level = 0  # 0=1x, +1=2x, +2=4x, -1=1/2, -2=1/4
 
 
 strvarCurrentPreviewPageNum = StringVar()
@@ -1788,13 +1790,36 @@ def remove_preview_img_and_clear_canvas():
 def load_image_to_canvas(photo_img, canvas):
         load_image_to_canvas(preview_img, previewImageCanvas)
 
+def apply_zoom(photo_img, zoom_level):
+    """Apply integer zoom/subsample to a PhotoImage.
+    zoom_level: 0=1x, +1=2x, +2=4x, -1=1/2x, -2=1/4x"""
+    if zoom_level > 0:
+        return photo_img.zoom(2 ** zoom_level)
+    elif zoom_level < 0:
+        return photo_img.subsample(2 ** (-zoom_level))
+    return photo_img
+
+def refresh_preview_zoom():
+    """Re-display the current preview image at the current zoom level."""
+    global preview_img
+    if preview_img_raw is None:
+        return
+    preview_img = apply_zoom(preview_img_raw, preview_zoom_level)
+    previewImageCanvas.delete(ALL)
+    previewImageCanvas.create_image(
+        (0, 0), anchor=NW, image=preview_img, tags='preview')
+    previewImageCanvas.config(
+        scrollregion=(0, 0, preview_img.width(), preview_img.height()))
+
 def load_preview_image(img_path, preview_page_index):
     # PhotoImage must be global var to prevent gc collect it
     global preview_img
+    global preview_img_raw
     global previewImageCanvas
 
     if os.path.exists(img_path):
-        preview_img = PhotoImage(file=img_path)
+        preview_img_raw = PhotoImage(file=img_path)
+        preview_img = apply_zoom(preview_img_raw, preview_zoom_level)
 
         canvas_image_tag = previewImageCanvas.create_image(
             (0, 0),
@@ -1803,16 +1828,9 @@ def load_preview_image(img_path, preview_page_index):
             tags='preview',
         )
 
-        (left_pos, top_pos, right_pos, bottom_pos) = (
-            0,
-            0,
-            preview_img.width(),
-            preview_img.height(),
-        )
         previewImageCanvas.config(
-            scrollregion=(left_pos, top_pos, right_pos, bottom_pos),
+            scrollregion=(0, 0, preview_img.width(), preview_img.height()),
         )
-        # canvas.scale('preview', 0, 0, 0.1, 0.1)
         strvarCurrentPreviewPageNum.set('Page: ' + str(preview_page_index))
     else:
         strvarCurrentPreviewPageNum.set('No Page ' + str(preview_page_index))
@@ -1926,6 +1944,27 @@ convertButton.grid(
     padx=5,
 )
 
+def on_command_zoom_out_cb():
+    global preview_zoom_level
+    if preview_zoom_level > -6:
+        preview_zoom_level -= 1
+        refresh_preview_zoom()
+
+def on_command_zoom_in_cb():
+    global preview_zoom_level
+    if preview_zoom_level < 2:
+        preview_zoom_level += 1
+        refresh_preview_zoom()
+
+def on_command_zoom_reset_cb():
+    global preview_zoom_level
+    preview_zoom_level = 0
+    refresh_preview_zoom()
+
+Button(previewFrame, text='1:1', width=3,
+       command=on_command_zoom_reset_cb).grid(
+    column=3, row=preview_frame_row_num, sticky=N+W, pady=0, padx=(30, 2))
+
 preview_frame_row_num += 1
 
 currentPreviewPageNumEntry = Entry(
@@ -1960,6 +1999,14 @@ previewButton.grid(
     pady=0,
     padx=5,
 )
+
+zoomFrame = Frame(previewFrame)
+zoomFrame.grid(column=3, row=preview_frame_row_num,
+               sticky=N+W, pady=0, padx=2)
+Button(zoomFrame, text='\u2212', width=2,
+       command=on_command_zoom_out_cb).pack(side=LEFT)
+Button(zoomFrame, text='+', width=2,
+       command=on_command_zoom_in_cb).pack(side=LEFT)
 
 preview_frame_column_num = 0
 preview_frame_row_num += 1
