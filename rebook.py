@@ -411,7 +411,7 @@ width_arg_name = '-w'  # -w <width>[in|cm|s|t|p]
 height_arg_name = '-h'  # -h <height>[in|cm|s|t|p|x]
 conversion_mode_arg_name = '-mode'  # -mode <mode>
 output_path_arg_name = '-o'  # -o <namefmt>
-output_pdf_suffix = '-output.pdf'
+default_output_pdf_suffix = '-output.pdf'
 screen_unit_prefix = '-screen_unit'
 
 strvarFilePath = StringVar()
@@ -457,7 +457,8 @@ def on_command_open_pdf_file_cb():
     if filename is not None and len(filename.strip()) > 0:
         strvarFilePath.set(filename)
         (base_path, file_ext) = os.path.splitext(filename)
-        strvarOutputFilePath.set(base_path + output_pdf_suffix)
+        strvarOutputSuffix.set(default_output_pdf_suffix)
+        strvarOutputFilePath.set(base_path + default_output_pdf_suffix)
 
 openButton = Button(
     requiredInputFrame,
@@ -694,15 +695,31 @@ saveButton = Button(
 )
 saveButton.grid(column=1, row=0, sticky=N+W, pady=0, padx=5)
 
+strvarOutputSuffix = StringVar(value=default_output_pdf_suffix)
+
+def on_output_suffix_changed(e=None):
+    path = strvarFilePath.get().strip()
+    if path:
+        base_path = os.path.splitext(path)[0]
+        strvarOutputFilePath.set(base_path + strvarOutputSuffix.get())
+
+outputSuffixLabel = Label(infoFrame, text='Output suffix:')
+outputSuffixLabel.grid(column=0, row=1, sticky=N+W, pady=0, padx=5)
+
+outputSuffixEntry = Entry(infoFrame, textvariable=strvarOutputSuffix)
+outputSuffixEntry.bind('<Return>', on_output_suffix_changed)
+outputSuffixEntry.bind('<FocusOut>', on_output_suffix_changed)
+outputSuffixEntry.grid(column=1, row=1, sticky=N+W, pady=0, padx=5)
+
 outputTextLabel = Label(infoFrame, text='Output Pdf File Path:')
-outputTextLabel.grid(column=0, row=1, sticky=N+W, pady=0, padx=5)
+outputTextLabel.grid(column=0, row=2, sticky=N+W, pady=0, padx=5)
 
 outputPathEntry = Entry(
     infoFrame,
     state='readonly',
     textvariable=strvarOutputFilePath,
 )
-outputPathEntry.grid(column=1, row=1, sticky=N+W, pady=0, padx=5)
+outputPathEntry.grid(column=1, row=2, sticky=N+W, pady=0, padx=5)
 
 def on_command_open_output_cb():
     path = strvarOutputFilePath.get().strip()
@@ -713,10 +730,9 @@ def on_command_open_output_cb():
 
 openOutputButton = Button(infoFrame, text='\u2197', width=2,
                           command=on_command_open_output_cb)
-openOutputButton.grid(column=2, row=1, sticky=N+W, pady=0, padx=0)
-
+openOutputButton.grid(column=2, row=2, sticky=N+W, pady=0, padx=0)
 cmdArgTextLabel = Label(infoFrame, text='Command-line Options:')
-cmdArgTextLabel.grid(column=0, row=2, sticky=N+W, pady=0, padx=5)
+cmdArgTextLabel.grid(column=0, row=3, sticky=N+W, pady=0, padx=5)
 
 def on_bind_event_cmd_args_cb(e=None):
     update_cmd_arg_entry_strvar()
@@ -727,7 +743,7 @@ cmdArgEntry = Entry(
     textvariable=strvarCmdArgs,
 )
 cmdArgEntry.bind('<Button-1>', on_bind_event_cmd_args_cb)
-cmdArgEntry.grid(column=1, row=2, sticky=N+W, pady=0, padx=5)
+cmdArgEntry.grid(column=1, row=3, sticky=N+W, pady=0, padx=5)
 
 def on_command_copy_cmd_args_cb():
     root.clipboard_clear()
@@ -735,7 +751,7 @@ def on_command_copy_cmd_args_cb():
 
 copyButton = Button(infoFrame, text='\u2398', width=2,
                     command=on_command_copy_cmd_args_cb)
-copyButton.grid(column=2, row=2, sticky=N+W, pady=0, padx=0)
+copyButton.grid(column=2, row=3, sticky=N+W, pady=0, padx=0)
 
 # parameters
 conversion_tab_left_part_row_num += 1
@@ -1949,7 +1965,7 @@ def on_command_convert_pdf_cb():
 
     global background_future
 
-    pdf_output_arg = output_path_arg_name + ' %s' + output_pdf_suffix
+    pdf_output_arg = output_path_arg_name + ' %s' + strvarOutputSuffix.get()
     background_future = convert_pdf_file(pdf_output_arg)
 
 convertButton = Button(
