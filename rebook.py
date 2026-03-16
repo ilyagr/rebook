@@ -803,7 +803,7 @@ def on_command_and_validate_crop_margin_cb():
         ]
         arg = (
             # no space between -cbox and page range
-            crop_margin_arg_name + page_range_arg + ' '
+            crop_margin_arg_name + page_range_arg + ' ' +
             'in,'.join(map(str.strip, margin_args)) + 'in'
         )
         add_or_update_one_cmd_arg(crop_margin_arg_name, arg)
