@@ -2013,7 +2013,7 @@ preview_frame_row_num += 1
 
 firstButton = Button(
     previewFrame,
-    text='<<',
+    text='< -10',
     command=on_command_ten_page_up_cb,
 )
 firstButton.grid(
@@ -2071,7 +2071,7 @@ def on_command_ten_page_down_cb():
 
 lastButton = Button(
     previewFrame,
-    text='>>',
+    text='+10 >',
     command=on_command_ten_page_down_cb,
 )
 lastButton.grid(
